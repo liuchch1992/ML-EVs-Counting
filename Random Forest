@@ -1,1 +1,30 @@
+import csv
+import numpy
+import pandas as pd
 
+data_file='./data.csv'
+data=pd.DataFrame(pd.read_csv(data_file))
+#Two-thirds of the randomly assigning samples were used for training
+train_data=data[data['group']!=0]
+test_data=data[data['group']==0]
+
+#breast cancer
+train_x= numpy.array(train_data[['CD9/CD63/CD81','HER2','EpCAM']])
+#HCC
+#train_x= numpy.array(train_data[['CD9/CD63/CD81','GPC-3','EpCAM']])
+train_y= numpy.array(train_data['class'])
+
+#breast cancer
+test_x= numpy.array(test_data[['CD9/CD63/CD81','HER2','EpCAM']])
+#HCC
+#test_x= numpy.array(test_data[['CD9/CD63/CD81','GPC-3','EpCAM']])
+test_y= numpy.array(test_data['class'])
+
+#RF
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier(n_estimators=12,random_state=0)
+
+clf.fit(train_x, train_y)
+
+print(clf.predict(test_x))
+print(clf.predict_proba(test_x))
